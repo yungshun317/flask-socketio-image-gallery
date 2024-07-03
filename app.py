@@ -28,6 +28,7 @@ class Image(db.Model):
 
 @app.route("/")
 def index():
+    socketio.emit("server originated", "Something happened on the server!")
     return render_template('index.html')
 
 if __name__ == '__main__':
