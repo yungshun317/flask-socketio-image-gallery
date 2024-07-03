@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO
+import cv2, base64, json
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secretkey'
@@ -17,6 +18,11 @@ db.init_app(app)
 ...    db.create_all()
 """
 
+def img2json(img):
+    img_data = cv2.imencode('.jpg', img)[1]
+    json_string = json.dumps({"image": base64.b64encode(img_data).decode('utf-8')})
+    return json_string
+
 class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
@@ -26,9 +32,15 @@ class Image(db.Model):
     def __repr__(self):
         return '<Image %r>' % self.name
 
+@socketio.on("update")
+def update_image():
+    socketio.emit("server originated", {"image": "Nothing"})
+
 @app.route("/")
 def index():
-    socketio.emit("server originated", "Something happened on the server!")
+    img = cv2.imread('static/Magazine.jpg')
+    json_img = img2json(img)
+    socketio.emit("server originated", {"image": "Nothing"})
     return render_template('index.html')
 
 if __name__ == '__main__':
