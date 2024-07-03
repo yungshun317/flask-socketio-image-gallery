@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO
+from threading import Lock
 import cv2, base64, json
 
 app = Flask(__name__)
@@ -11,6 +12,9 @@ socketio = SocketIO(app)
 
 db = SQLAlchemy()
 db.init_app(app)
+
+thread = None
+thread_lock = Lock()
 """
 ~$ python3
 >>> from app import app, db
@@ -32,15 +36,24 @@ class Image(db.Model):
     def __repr__(self):
         return '<Image %r>' % self.name
 
-@socketio.on("update")
-def update_image():
-    socketio.emit("server originated", {"image": "Nothing"})
+@socketio.on("connect")
+def connect():
+    # socketio.emit("server originated", {"image": "Nothing"})
+    global thread
+    with thread_lock:
+        if thread is None:
+            thread = socketio.start_background_task(background_task)
+
+def background_task():
+    while True:
+        socketio.sleep(10)
+        # img = cv2.imread('static/Magazine.jpg')
+        # json_img = img2json(img)
+        # socketio.emit("server originated", {"image": "Nothing"})
+        socketio.emit('update_image', {"image": "Something"})
 
 @app.route("/")
 def index():
-    img = cv2.imread('static/Magazine.jpg')
-    json_img = img2json(img)
-    socketio.emit("server originated", {"image": "Nothing"})
     return render_template('index.html')
 
 if __name__ == '__main__':
