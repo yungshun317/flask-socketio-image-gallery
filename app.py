@@ -47,10 +47,10 @@ def connect():
 def background_task():
     while True:
         socketio.sleep(10)
-        # img = cv2.imread('static/Magazine.jpg')
+        img = cv2.imread('static/Magazine.jpg')
         # json_img = img2json(img)
-        # socketio.emit("server originated", {"image": "Nothing"})
-        socketio.emit('update_image', {"image": "Something"})
+        # socketio.emit('update_image', json.loads(json_img))
+        socketio.emit('update_image', {"image": cv2.imencode('.jpg', img)[1].tobytes()})
 
 @app.route("/")
 def index():
