@@ -3,9 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Flask SocketIO Image Gallery</title>
+    <style>
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(5, calc((100vw - 48px)/5));
+            gap: 8px;
+        }
+
+        .grid-item {
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
-    <div class="image-gallery"></div>
+    <div class="image-gallery grid"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>

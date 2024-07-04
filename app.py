@@ -22,10 +22,12 @@ thread_lock = Lock()
 ...    db.create_all()
 """
 
+"""
 def img2json(img):
     img_data = cv2.imencode('.jpg', img)[1]
     json_string = json.dumps({"image": base64.b64encode(img_data).decode('utf-8')})
     return json_string
+"""
 
 class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
