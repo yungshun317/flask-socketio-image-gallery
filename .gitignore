@@ -35,7 +35,7 @@ __pycache__
 
 checkpoints/
 media/
-static/
+*.jpg
 .idea/
 *.iml
 
